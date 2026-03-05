@@ -11,7 +11,6 @@ class AdminLoginController extends Controller
     // Tampilkan form login
     public function showLoginForm()
     {
-        // Kalau sudah login, langsung redirect ke dashboard
         if (Auth::guard('admin')->check()) {
             return redirect()->route('dashboard');
         }
@@ -19,25 +18,37 @@ class AdminLoginController extends Controller
         return view('auth.login');
     }
 
-    // Proses login
+    // Proses login (Support Username & Email)
     public function login(Request $request)
     {
+        // 1. Validasi input sederhana
         $request->validate([
             'username' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        $credentials = $request->only('username', 'password');
+        // 2. Cek apakah input adalah email atau username
+        // Jika formatnya email, kita cari di kolom 'email', jika bukan maka kolom 'username'
+        $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
+        // 3. Susun kredensial berdasarkan hasil deteksi di atas
+        $credentials = [
+            $fieldType => $request->username,
+            'password' => $request->password,
+        ];
+
+        // 4. Eksekusi login dengan Guard Admin dan fitur Remember Me
+        // $request->boolean('remember') akan mengambil nilai true jika checkbox dicentang
         if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
             return redirect()->intended(route('dashboard'));
         }
 
+        // 5. Jika gagal, kembalikan dengan pesan error
         return back()
-            ->withInput($request->only('username'))
+            ->withInput($request->only('username', 'remember'))
             ->withErrors([
-                'username' => 'Username atau password salah.',
+                'username' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
             ]);
     }
 

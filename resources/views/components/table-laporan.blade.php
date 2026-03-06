@@ -21,7 +21,7 @@
                     <td class="px-6 py-4 text-sm">
                         <span
                             class="px-2 py-1 text-[10px] font-bold uppercase rounded-md 
-                {{ $aspi->status == 'selesai' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' }}">
+                {{ strtolower($aspi->status) == 'selesai' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' }}\">
                             {{ $aspi->status }}
                         </span>
                     </td>

@@ -6,17 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Siswa extends Model
 {
-    // 1. Beritahu Laravel nama tabel aslinya
     protected $table = 'siswa';
 
-    // 2. Beritahu Laravel Primary Key-nya adalah 'nis' (bukan 'id')
     protected $primaryKey = 'nis';
 
-    // 3. Matikan auto-increment jika NIS diisi manual
-    public $incrementing = false;
+    public $incrementing = false; // NIS bukan auto-increment
 
-    protected $fillable = ['nis', 'nama', 'kelas'];
-    
-    // Opsional: Jika tabel siswa tidak punya kolom created_at/updated_at
-    // public $timestamps = false;
+    protected $keyType = 'string';
+
+    protected $fillable = [
+        'nis',
+        'nama',
+        'kelas',
+    ];
+
+    /**
+     * Relasi ke Aspirasi
+     */
+    public function aspirasi()
+    {
+        return $this->hasMany(Aspirasi::class, 'nis', 'nis');
+    }
 }

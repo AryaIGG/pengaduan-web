@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Admin;
 use App\Models\Aspirasi;
+use App\Models\Feedback;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 
@@ -11,21 +11,20 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Ambil data dengan Eager Loading
-        $aspirasi_terbaru = Aspirasi::with('siswa')->latest()->limit(10)->get();
+        // Eager load siswa & kategori
+        $aspirasi_terbaru = Aspirasi::with(['siswa', 'kategori'])->latest()->limit(10)->get();
 
-        // 2. Hitung statistik
-        $total_aspirasi   = Aspirasi::count();
-        $total_siswa      = Siswa::count();
-        $aspirasi_proses  = Aspirasi::where('status', 'proses')->count();
-        $aspirasi_selesai = Aspirasi::where('status', 'selesai')->count(); // ✅ TAMBAHAN
+        // Count — pakai whereRaw LOWER() agar case-insensitive (DB simpan "Proses"/"Menunggu"/"Selesai")
+        $total_aspirasi = Aspirasi::count();
+        $total_siswa = Siswa::count();
+        $aspirasi_proses = Aspirasi::whereRaw('LOWER(status) = ?', ['proses'])->count();
+        $aspirasi_selesai = Aspirasi::whereRaw('LOWER(status) = ?', ['selesai'])->count();
 
-        // 3. Kirim SEMUA variabel ke view
         return view('dashboard', compact(
             'total_aspirasi',
             'total_siswa',
             'aspirasi_proses',
-            'aspirasi_selesai', 
+            'aspirasi_selesai',
             'aspirasi_terbaru'
         ));
     }
@@ -34,16 +33,24 @@ class DashboardController extends Controller
     {
         $request->validate([
             'id_pelaporan' => 'required|exists:aspirasi,id_pelaporan',
-            'feedback'     => 'required|string|min:5',
-            'status'       => 'required|in:proses,selesai', // ✅ lowercase sesuai DB
+            'feedback' => 'required|string|min:5',
+            'status' => 'required|in:proses,selesai',
         ]);
 
+        // 1. Update status di tabel aspirasi (simpan "Proses"/"Selesai" sesuai format DB)
         $aspirasi = Aspirasi::findOrFail($request->id_pelaporan);
-        $aspirasi->update([
-            'status'   => $request->status,
-            'feedback' => $request->feedback,
-        ]);
+        $aspirasi->update(['status' => ucfirst($request->status)]);
 
-        return redirect()->back()->with('success', 'Respon berhasil dikirim ke aplikasi siswa!');
+        // 2. Simpan feedback ke tabel feedback (sesuai struktur DB)
+        Feedback::updateOrCreate(
+            ['id_pelaporan' => $request->id_pelaporan],
+            [
+                'feedback' => $request->feedback,
+                'status' => ucfirst($request->status),
+                'id_kategori' => $aspirasi->id_kategori,
+            ]
+        );
+
+        return redirect()->back()->with('success', 'Respon berhasil dikirim!');
     }
 }

@@ -4,23 +4,43 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+// Tambahkan import model-model yang direlasikan di bawah ini:
+
 class Aspirasi extends Model
 {
-    // Nama tabel sesuai di MariaDB
     protected $table = 'aspirasi';
 
-    // Laravel mencari 'id', jadi kita arahkan ke 'id_pelaporan'
     protected $primaryKey = 'id_pelaporan';
 
-    // Jika id_pelaporan bukan angka (misal UUID), set ini ke false
-    public $incrementing = true;
+    protected $fillable = [
+        'nis',
+        'id_kategori',
+        'lokasi',
+        'ket',
+        'status',
+    ];
 
-    // Kolom yang boleh diisi (Mass Assignment)
-    protected $fillable = ['nis', 'id_kategori', 'lokasi', 'ket', 'status'];
-
+    /**
+     * Relasi ke Siswa
+     */
     public function siswa()
     {
-        // Aspirasi ini dimiliki oleh satu Siswa berdasarkan kolom 'nis'
         return $this->belongsTo(Siswa::class, 'nis', 'nis');
+    }
+
+    /**
+     * Relasi ke Kategori
+     */
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'id_kategori', 'id_kategori');
+    }
+
+    /**
+     * Relasi ke Feedback
+     */
+    public function feedback()
+    {
+        return $this->hasOne(Feedback::class, 'id_pelaporan', 'id_pelaporan');
     }
 }

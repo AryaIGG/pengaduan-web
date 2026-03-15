@@ -27,6 +27,12 @@
 
             <h2 class="text-lg font-medium text-white mb-6">Masuk ke Dashboard</h2>
 
+            @if (session('status'))
+                <div class="mb-4 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-sm">
+                    {{ session('status') }}
+                </div>
+            @endif
+
             @if ($errors->any())
                 <div class="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
                     {{ $errors->first() }}
@@ -76,6 +82,28 @@
                         class="size-4 rounded border-[#2a2a2a] bg-[#0a0a0a] text-white focus:ring-0 focus:ring-offset-0 checked:bg-white">
                     <label for="remember" class="text-sm text-neutral-500 cursor-pointer select-none">Ingat saya</label>
                 </div>
+
+                <div class="text-right">
+                    <a href="{{ route('admin.password.request') }}"
+                        class="text-xs text-neutral-400 hover:text-white transition-colors underline underline-offset-4">
+                        Lupa password?
+                    </a>
+                </div>
+
+                <a href="{{ route('admin.auth.google') }}"
+                    class="w-full py-3 px-4 mt-2 inline-flex justify-center items-center gap-x-2 text-sm font-semibold rounded-xl border border-[#2a2a2a] text-white hover:border-white/30 hover:bg-white/5 transition-all">
+                    <svg class="size-4" viewBox="0 0 24 24" aria-hidden="true">
+                        <path fill="#EA4335"
+                            d="M12 10.2v3.9h5.4c-.2 1.3-1.5 3.8-5.4 3.8a6.2 6.2 0 0 1 0-12.4c1.8 0 3 .8 3.7 1.5l2.5-2.4C16.6 2 14.5 1 12 1 6.9 1 2.7 5.2 2.7 10.3S6.9 19.6 12 19.6c6 0 7.4-4.2 7.4-6.4 0-.4 0-.7-.1-1H12z" />
+                        <path fill="#34A853"
+                            d="M3.9 7.1l3.2 2.4a6.2 6.2 0 0 1 9-3.1l2.5-2.4C16.6 2 14.5 1 12 1 8.2 1 4.9 3.1 3.9 7.1z" />
+                        <path fill="#FBBC05"
+                            d="M12 19.6c3.4 0 6.2-1.1 8.3-3.1l-2.8-2.2c-.8.6-2 .9-3.5.9a6.2 6.2 0 0 1-5.9-4.2l-3.3 2.6A9.3 9.3 0 0 0 12 19.6z" />
+                        <path fill="#4285F4"
+                            d="M19.3 12.2c0-.4 0-.7-.1-1H12v3.9h5.4c-.2 1.3-1.5 3.8-5.4 3.8a6.2 6.2 0 0 1-5.9-4.2l-3.3 2.6A9.3 9.3 0 0 0 12 19.6c6 0 7.4-4.2 7.4-6.4z" />
+                    </svg>
+                    Masuk dengan Google
+                </a>
 
                 <button type="submit"
                     class="w-full py-3 px-4 mt-2 inline-flex justify-center items-center text-sm font-semibold rounded-xl bg-white text-black hover:bg-neutral-200 active:scale-[0.98] focus:outline-none transition-all shadow-lg shadow-white/5">

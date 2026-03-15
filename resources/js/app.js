@@ -1,10 +1,15 @@
 import './bootstrap';
+import $ from 'jquery';
+import DataTable from 'datatables.net-dt';
 
-// Gunakan path absolut ke file distribusinya untuk membungkam error Vite 7
 import '../../node_modules/preline/dist/preline.js';
 
+window.$ = $;
+window.jQuery = $;
+window.DataTable = DataTable;
+
 window.addEventListener('load', () => {
-  if (window.HSStaticMethods) {
-    window.HSStaticMethods.autoInit();
-  }
+    if (window.HSStaticMethods) {
+        window.HSStaticMethods.autoInit();
+    }
 });

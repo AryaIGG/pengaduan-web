@@ -3,13 +3,15 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class AdminLoginController extends Controller
 {
     // Tampilkan form login
-    public function showLoginForm()
+    public function showLoginForm(): RedirectResponse|View
     {
         if (Auth::guard('admin')->check()) {
             return redirect()->route('dashboard');
@@ -19,7 +21,7 @@ class AdminLoginController extends Controller
     }
 
     // Proses login (Support Username & Email)
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
         // 1. Validasi input sederhana
         $request->validate([
@@ -41,6 +43,7 @@ class AdminLoginController extends Controller
         // $request->boolean('remember') akan mengambil nilai true jika checkbox dicentang
         if (Auth::guard('admin')->attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('dashboard'));
         }
 
@@ -53,7 +56,7 @@ class AdminLoginController extends Controller
     }
 
     // Logout
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::guard('admin')->logout();
         $request->session()->invalidate();

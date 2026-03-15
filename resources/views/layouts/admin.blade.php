@@ -202,17 +202,26 @@
                     <h1 class="text-sm font-semibold text-foreground truncate">@yield('title', 'Dashboard')</h1>
                 </div>
 
+                @php
+                    $admin = Auth::guard('admin')->user();
+                @endphp
+
                 {{-- Account Dropdown --}}
                 <div
                     class="hs-dropdown inline-flex [--strategy:absolute] [--auto-close:inside] [--placement:bottom-right] relative">
                     <button id="hs-admin-dd" type="button"
                         class="flex items-center gap-x-2 py-1 px-2 rounded-lg hover:bg-surface-hover transition-colors focus:outline-none">
-                        <div
-                            class="size-7 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
-                            {{ strtoupper(substr(Auth::guard('admin')->user()->username ?? 'A', 0, 1)) }}
-                        </div>
+                        @if (!empty($admin?->avatar_url))
+                            <img src="{{ $admin->avatar_url }}" alt="Admin Avatar"
+                                class="size-7 rounded-full object-cover border border-card-line">
+                        @else
+                            <div
+                                class="size-7 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold">
+                                {{ strtoupper(substr($admin?->username ?? 'A', 0, 1)) }}
+                            </div>
+                        @endif
                         <span class="hidden sm:block text-sm font-medium text-foreground">
-                            {{ Auth::guard('admin')->user()->username ?? 'Admin' }}
+                            {{ $admin?->username ?? 'Admin' }}
                         </span>
                         <svg class="hidden sm:block size-3.5 text-muted-foreground-1" fill="none"
                             stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -224,8 +233,7 @@
                     <div class="hs-dropdown-menu hs-dropdown-open:opacity-100 w-56 transition-[opacity,margin] duration opacity-0 hidden z-20 bg-dropdown border border-dropdown-line rounded-xl shadow-xl"
                         role="menu">
                         <div class="py-2 px-3.5 border-b border-dropdown-divider">
-                            <span
-                                class="font-semibold text-sm text-foreground">{{ Auth::guard('admin')->user()->username ?? 'Admin' }}</span>
+                            <span class="font-semibold text-sm text-foreground">{{ $admin?->username ?? 'Admin' }}</span>
                             <p class="text-xs text-muted-foreground-1">System Administrator</p>
                         </div>
                         <div class="p-1">
@@ -282,9 +290,6 @@
 
     {{-- Mobile Overlay --}}
     <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-[55] hidden lg:hidden"></div>
-
-    {{-- Preline JS --}}
-    <script src="https://cdn.jsdelivr.net/npm/preline/dist/preline.js"></script>
 
     <script>
         const sidebar = document.getElementById('sidebar');

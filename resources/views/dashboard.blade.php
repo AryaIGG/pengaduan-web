@@ -113,241 +113,183 @@
 
     {{-- ===== TABLE ===== --}}
     <div class="lg:col-span-2">
-        <div class="bg-layer border border-layer-line rounded-xl shadow-2xs overflow-hidden">
-
-            {{-- Toolbar --}}
-            <div class="px-4 py-3 flex flex-wrap items-center gap-2 border-b border-table-line">
-                {{-- Search --}}
-                <div class="relative flex-1 min-w-[140px]">
+        <div id="aspirasi-datatable"
+            class="bg-layer border border-layer-line rounded-xl shadow-2xs overflow-hidden --prevent-on-load-init"
+            data-hs-datatable='{"pageLength":10,"lengthMenu":[[5,10,25,-1],[5,10,25,"Semua"]],"order":[],"autoWidth":false,"selecting":true,"rowSelectingOptions":{"selectAllSelector":"#aspirasi-select-all-rows","individualSelector":".aspirasi-select-row"},"layout":{"topStart":null,"topEnd":null,"bottomStart":null,"bottomEnd":null},"columnDefs":[{"targets":[0,5],"orderable":false}]}'>
+            <div class="px-5 py-4 flex flex-wrap items-end gap-3 border-b border-table-line bg-muted/20">
+                <div class="min-w-0 grow">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground-1">Daftar Aspirasi Terbaru</p>
+                    <p class="text-xs text-muted-foreground-2 mt-0.5">Gunakan search atau filter per kolom untuk mempercepat review.</p>
+                </div>
+                <div class="relative w-full sm:w-64 lg:w-72">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-2.5 pointer-events-none">
                         <svg class="size-3.5 text-muted-foreground-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                         </svg>
                     </div>
-                    <input type="text" id="search-input" oninput="searchTable(this.value)"
-                        placeholder="Search..."
-                        class="w-full py-1.5 ps-8 pe-3 text-xs bg-muted border border-card-line rounded-lg text-foreground placeholder-muted-foreground-2 focus:outline-none focus:border-primary">
+                    <input type="text" data-hs-datatable-search placeholder="Search..."
+                        class="w-full h-9 ps-8 pe-3 text-xs bg-layer border border-card-line rounded-lg text-foreground placeholder-muted-foreground-2 focus:outline-none focus:border-primary">
                 </div>
 
-                {{-- Actions --}}
-                <div class="flex items-center gap-x-1.5 ms-auto">
-                    <button type="button" onclick="exportCSV()"
-                        class="py-1.5 px-2.5 inline-flex items-center gap-x-1.5 text-xs font-medium rounded-lg bg-layer border border-layer-line text-layer-foreground hover:bg-layer-hover focus:outline-none transition-colors">
-                        <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        Export
-                    </button>
-
-                    <div class="relative" id="filter-dropdown-wrapper">
-                        <button type="button" onclick="toggleFilter()"
-                            class="py-1.5 px-2.5 inline-flex items-center gap-x-1.5 text-xs font-medium rounded-lg bg-layer border border-layer-line text-layer-foreground hover:bg-layer-hover focus:outline-none transition-colors">
-                            <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
-                            </svg>
-                            Filter
-                            <span id="filter-badge" class="hidden ms-0.5 size-4 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-bold">1</span>
-                        </button>
-                        <div id="filter-dropdown"     
-                            class="hidden absolute end-0 top-full mt-1.5 z-20 w-44 bg-dropdown border border-dropdown-line rounded-xl shadow-xl p-1.5 space-y-0.5">
-                            <button onclick="setFilter('all')" class="w-full text-start px-3 py-1.5 text-xs rounded-lg text-foreground hover:bg-layer-hover transition-colors font-medium">Semua Status</button>
-                            <button onclick="setFilter('menunggu')" class="w-full text-start px-3 py-1.5 text-xs rounded-lg text-foreground hover:bg-layer-hover transition-colors">
-                                <span class="inline-flex items-center gap-x-1.5"><span class="size-1.5 rounded-full bg-yellow-500"></span>Menunggu</span>
-                            </button>
-                            <button onclick="setFilter('proses')" class="w-full text-start px-3 py-1.5 text-xs rounded-lg text-foreground hover:bg-layer-hover transition-colors">
-                                <span class="inline-flex items-center gap-x-1.5"><span class="size-1.5 rounded-full bg-blue-500"></span>Proses</span>
-                            </button>
-                            <button onclick="setFilter('selesai')" class="w-full text-start px-3 py-1.5 text-xs rounded-lg text-foreground hover:bg-layer-hover transition-colors">
-                                <span class="inline-flex items-center gap-x-1.5"><span class="size-1.5 rounded-full bg-teal-500"></span>Selesai</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <select data-hs-datatable-page-entities
+                    class="h-9 py-1.5 px-2.5 text-xs font-medium rounded-lg bg-layer border border-layer-line text-layer-foreground focus:outline-none min-w-20">
+                </select>
             </div>
 
-            {{-- ── DESKTOP TABLE (md+) ── --}}
-            <div class="hidden md:block overflow-x-auto">
-                <table class="w-full divide-y divide-table-line">
-                    <thead class="bg-muted">
+            <div class="max-h-[32rem] overflow-auto">
+                <table class="w-full min-w-[860px] table-fixed divide-y divide-table-line">
+                    <thead class="bg-muted sticky top-0 z-10">
                         <tr>
-                            <th class="w-10 px-4 py-3">
-                                <input type="checkbox" id="check-all" onchange="toggleAll(this)"
-                                    class="size-3.5 rounded border-card-line bg-muted cursor-pointer">
+                            <th class="px-4 py-3 w-10 --exclude-from-ordering">
+                                <input id="aspirasi-select-all-rows" type="checkbox"
+                                    class="aspirasi-select-row size-3.5 rounded border-card-line bg-muted cursor-pointer">
                             </th>
-                            <th class="px-4 py-3 text-start">
-                                <span class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground-1">Pelapor</span>
-                            </th>
-                            <th class="px-4 py-3 text-start">
-                                <span class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground-1">Keterangan</span>
-                            </th>
-                            <th class="px-4 py-3 text-start">
-                                <span class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground-1">Status</span>
-                            </th>
-                            <th class="px-4 py-3 text-start">
-                                <span class="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground-1">Tanggal</span>
-                            </th>
-                            <th class="px-4 py-3 w-16"></th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-table-line" id="table-body-desktop">
-
-                        @forelse($aspirasi_terbaru ?? [] as $i => $aspi)
-                        @php
-                            $cfg = match(strtolower($aspi->status)) {
-                                'selesai' => ['dot'=>'bg-teal-500',   'bg'=>'bg-teal-500/10',   'text'=>'text-teal-400',   'label'=>'Selesai'],
-                                'proses'  => ['dot'=>'bg-blue-500',   'bg'=>'bg-blue-500/10',   'text'=>'text-blue-400',   'label'=>'Proses'],
-                                default   => ['dot'=>'bg-yellow-500', 'bg'=>'bg-yellow-500/10', 'text'=>'text-yellow-400', 'label'=>'Menunggu'],
-                            };
-                        @endphp
-                        <tr class="aspirasi-row hover:bg-muted/30 transition-colors"
-                            data-status="{{ strtolower($aspi->status) }}"
-                            data-search="{{ strtolower(($aspi->siswa->nama ?? '') . ' ' . $aspi->nis . ' ' . $aspi->ket) }}">
-
-                            <td class="px-4 py-3">
-                                <input type="checkbox" class="row-check size-3.5 rounded border-card-line bg-muted cursor-pointer">
-                            </td>
-
-                            <td class="px-4 py-3">
-                                <div class="flex items-center gap-x-2.5 min-w-0">
-                                    <span class="inline-flex items-center justify-center size-7 rounded-full bg-layer border border-layer-line text-xs font-semibold text-foreground shrink-0">
-                                        {{ strtoupper(substr($aspi->siswa->nama ?? 'S', 0, 1)) }}
-                                    </span>
-                                    <div class="min-w-0">
-                                        <span class="block text-sm font-medium text-foreground truncate">{{ $aspi->siswa->nama ?? 'Anonim' }}</span>
-                                        <span class="block text-[11px] text-muted-foreground-1">{{ $aspi->nis }}</span>
+                            <th class="px-4 py-3 w-[28%] text-start text-[10px] font-semibold uppercase tracking-wider text-muted-foreground-1">
+                                <div class="flex items-center gap-x-1.5">
+                                    <span>Pelapor</span>
+                                    <div class="hs-dropdown [--auto-close:inside] [--placement:bottom-right] relative inline-flex">
+                                        <button type="button" class="hs-dropdown-toggle size-5 inline-flex items-center justify-center rounded border border-transparent text-muted-foreground-1 hover:text-foreground hover:border-line-2">
+                                            <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                                        </button>
+                                        <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden bg-dropdown border border-dropdown-line shadow-md rounded-lg p-2">
+                                            <input id="filter-pelapor" type="text"
+                                                class="py-1.5 px-2.5 block w-48 bg-layer border border-layer-line rounded-md text-xs text-foreground placeholder-muted-foreground-1 focus:outline-none"
+                                                placeholder="Filter pelapor">
+                                        </div>
                                     </div>
                                 </div>
-                            </td>
-
-                            <td class="px-4 py-3" style="max-width:0; width:35%">
-                                <span class="text-xs text-muted-foreground-1 italic truncate block">"{{ Str::limit($aspi->ket, 50) }}"</span>
-                            </td>
-
-                            <td class="px-4 py-3 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-xs font-medium {{ $cfg['bg'] }} {{ $cfg['text'] }}">
-                                    <span class="size-1.5 rounded-full {{ $cfg['dot'] }}"></span>
-                                    {{ $cfg['label'] }}
-                                </span>
-                            </td>
-
-                            <td class="px-4 py-3 whitespace-nowrap">
-                                <span class="text-xs text-muted-foreground-1">
+                            </th>
+                            <th class="px-4 py-3 w-[32%] text-start text-[10px] font-semibold uppercase tracking-wider text-muted-foreground-1">
+                                <div class="flex items-center gap-x-1.5">
+                                    <span>Keterangan</span>
+                                    <div class="hs-dropdown [--auto-close:inside] [--placement:bottom-right] relative inline-flex">
+                                        <button type="button" class="hs-dropdown-toggle size-5 inline-flex items-center justify-center rounded border border-transparent text-muted-foreground-1 hover:text-foreground hover:border-line-2">
+                                            <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                                        </button>
+                                        <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden bg-dropdown border border-dropdown-line shadow-md rounded-lg p-2">
+                                            <input id="filter-keterangan" type="text"
+                                                class="py-1.5 px-2.5 block w-56 bg-layer border border-layer-line rounded-md text-xs text-foreground placeholder-muted-foreground-1 focus:outline-none"
+                                                placeholder="Filter keterangan">
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="px-4 py-3 w-[14%] text-start text-[10px] font-semibold uppercase tracking-wider text-muted-foreground-1">
+                                <div class="flex items-center gap-x-1.5">
+                                    <span>Status</span>
+                                    <div class="hs-dropdown [--auto-close:inside] [--placement:bottom-right] relative inline-flex">
+                                        <button type="button" class="hs-dropdown-toggle size-5 inline-flex items-center justify-center rounded border border-transparent text-muted-foreground-1 hover:text-foreground hover:border-line-2">
+                                            <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                                        </button>
+                                        <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden bg-dropdown border border-dropdown-line shadow-md rounded-lg p-2">
+                                            <select id="filter-status"
+                                                class="py-1.5 px-2.5 block w-40 bg-layer border border-layer-line rounded-md text-xs text-foreground focus:outline-none">
+                                                <option value="all">Semua</option>
+                                                <option value="Menunggu">Menunggu</option>
+                                                <option value="Proses">Proses</option>
+                                                <option value="Selesai">Selesai</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="px-4 py-3 w-[16%] text-start text-[10px] font-semibold uppercase tracking-wider text-muted-foreground-1">
+                                <div class="flex items-center gap-x-1.5">
+                                    <span>Tanggal</span>
+                                    <div class="hs-dropdown [--auto-close:inside] [--placement:bottom-right] relative inline-flex">
+                                        <button type="button" class="hs-dropdown-toggle size-5 inline-flex items-center justify-center rounded border border-transparent text-muted-foreground-1 hover:text-foreground hover:border-line-2">
+                                            <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                                        </button>
+                                        <div class="hs-dropdown-menu transition-[opacity,margin] duration hs-dropdown-open:opacity-100 opacity-0 hidden bg-dropdown border border-dropdown-line shadow-md rounded-lg p-2">
+                                            <input id="filter-tanggal" type="text"
+                                                class="py-1.5 px-2.5 block w-44 bg-layer border border-layer-line rounded-md text-xs text-foreground placeholder-muted-foreground-1 focus:outline-none"
+                                                placeholder="cth: 06 Feb 2026">
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                            <th class="px-4 py-3 w-16 --exclude-from-ordering"></th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-table-line">
+                        @forelse($aspirasi_terbaru ?? [] as $aspi)
+                            @php
+                                $cfg = match (strtolower($aspi->status)) {
+                                    'selesai' => ['dot' => 'bg-teal-500', 'bg' => 'bg-teal-500/10', 'text' => 'text-teal-400', 'label' => 'Selesai'],
+                                    'proses' => ['dot' => 'bg-blue-500', 'bg' => 'bg-blue-500/10', 'text' => 'text-blue-400', 'label' => 'Proses'],
+                                    default => ['dot' => 'bg-yellow-500', 'bg' => 'bg-yellow-500/10', 'text' => 'text-yellow-400', 'label' => 'Menunggu'],
+                                };
+                            @endphp
+                            <tr class="hover:bg-muted/30 transition-colors">
+                                <td class="px-4 py-4 align-top">
+                                    <input type="checkbox"
+                                        class="aspirasi-select-row size-3.5 rounded border-card-line bg-muted cursor-pointer"
+                                        data-hs-datatable-row-selecting-individual>
+                                </td>
+                                <td class="px-4 py-4 align-top">
+                                    <div class="flex items-center gap-x-2.5 min-w-0">
+                                        <span class="inline-flex items-center justify-center size-7 rounded-full bg-layer border border-layer-line text-xs font-semibold text-foreground shrink-0">
+                                            {{ strtoupper(substr($aspi->siswa->nama ?? 'S', 0, 1)) }}
+                                        </span>
+                                        <div class="min-w-0">
+                                            <span class="block text-[13px] font-semibold text-foreground truncate">{{ $aspi->siswa->nama ?? 'Anonim' }}</span>
+                                            <span class="block text-[10px] text-muted-foreground-1 mt-0.5">NIS {{ $aspi->nis }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4 max-w-xs align-top">
+                                    <span class="text-xs text-muted-foreground-1 italic leading-relaxed line-clamp-2 block">"{{ Str::limit($aspi->ket, 90) }}"</span>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap align-top">
+                                    <span class="inline-flex items-center gap-x-1.5 py-1 px-2.5 rounded-full text-[11px] font-semibold {{ $cfg['bg'] }} {{ $cfg['text'] }}">
+                                        <span class="size-1.5 rounded-full {{ $cfg['dot'] }}"></span>
+                                        {{ $cfg['label'] }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-4 whitespace-nowrap text-xs text-muted-foreground-1 align-top">
                                     {{ $aspi->created_at ? $aspi->created_at->format('d M Y, H:i') : '-' }}
-                                </span>
-                            </td>
-
-                            <td class="px-4 py-3">
-                                <div class="flex items-center justify-end gap-x-1">
-                                    <button onclick="setResponse('{{ $aspi->id_pelaporan }}','{{ addslashes($aspi->siswa->nama ?? 'Anonim') }}','{{ addslashes($aspi->ket) }}','{{ strtolower($aspi->status) }}')"
-                                        title="Respond"
-                                        class="size-7 inline-flex items-center justify-center rounded-lg text-muted-foreground-1 hover:text-primary hover:bg-primary/10 transition-colors">
-                                        <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                                    </button>
-                                </div>
-                            </td>
-
-                        </tr>
+                                </td>
+                                <td class="px-4 py-4 align-top">
+                                    <div class="flex items-center justify-end">
+                                        <button type="button"
+                                            onclick="setResponse('{{ $aspi->id_pelaporan }}','{{ addslashes($aspi->siswa->nama ?? 'Anonim') }}','{{ addslashes($aspi->ket) }}','{{ strtolower($aspi->status) }}')"
+                                            title="Respond"
+                                            class="size-7 inline-flex items-center justify-center rounded-lg text-muted-foreground-1 hover:text-primary hover:bg-primary/10 transition-colors">
+                                            <svg class="size-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="6" class="px-6 py-14 text-center">
-                                <div class="flex flex-col items-center gap-y-2">
-                                    <svg class="size-8 text-muted-foreground-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                                    <p class="text-sm text-muted-foreground-1">Belum ada laporan masuk.</p>
-                                </div>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td colspan="6" class="px-6 py-14 text-center">
+                                    <div class="flex flex-col items-center gap-y-2">
+                                        <svg class="size-8 text-muted-foreground-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                        <p class="text-sm text-muted-foreground-1">Belum ada laporan masuk.</p>
+                                    </div>
+                                </td>
+                            </tr>
                         @endforelse
-
                     </tbody>
                 </table>
             </div>
 
-            {{-- ── MOBILE CARD LIST (< md) ── --}}
-            <div class="md:hidden divide-y divide-table-line" id="table-body-mobile">
-                @forelse($aspirasi_terbaru ?? [] as $i => $aspi)
-                @php
-                    $cfg = match(strtolower($aspi->status)) {
-                        'selesai' => ['dot'=>'bg-teal-500',   'bg'=>'bg-teal-500/10',   'text'=>'text-teal-400',   'label'=>'Selesai'],
-                        'proses'  => ['dot'=>'bg-blue-500',   'bg'=>'bg-blue-500/10',   'text'=>'text-blue-400',   'label'=>'Proses'],
-                        default   => ['dot'=>'bg-yellow-500', 'bg'=>'bg-yellow-500/10', 'text'=>'text-yellow-400', 'label'=>'Menunggu'],
-                    };
-                @endphp
-                <div class="aspirasi-row px-4 py-3 hover:bg-muted/30 transition-colors"
-                    data-status="{{ strtolower($aspi->status) }}"
-                    data-search="{{ strtolower(($aspi->siswa->nama ?? '') . ' ' . $aspi->nis . ' ' . $aspi->ket) }}">
-                    <div class="flex items-start justify-between gap-x-3">
-                        {{-- Left: avatar + info --}}
-                        <div class="flex items-start gap-x-3 min-w-0 flex-1">
-                            <span class="inline-flex items-center justify-center size-8 rounded-full bg-layer border border-layer-line text-xs font-semibold text-foreground shrink-0 mt-0.5">
-                                {{ strtoupper(substr($aspi->siswa->nama ?? 'S', 0, 1)) }}
-                            </span>
-                            <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-x-2 flex-wrap">
-                                    <span class="text-sm font-medium text-foreground">{{ $aspi->siswa->nama ?? 'Anonim' }}</span>
-                                    <span class="text-[11px] text-muted-foreground-1">{{ $aspi->nis }}</span>
-                                </div>
-                                <p class="text-xs text-muted-foreground-1 italic mt-0.5 line-clamp-2">"{{ Str::limit($aspi->ket, 80) }}"</p>
-                                <div class="flex items-center gap-x-3 mt-1.5">
-                                    <span class="inline-flex items-center gap-x-1.5 py-0.5 px-2 rounded-full text-[11px] font-medium {{ $cfg['bg'] }} {{ $cfg['text'] }}">
-                                        <span class="size-1.5 rounded-full {{ $cfg['dot'] }}"></span>
-                                        {{ $cfg['label'] }}
-                                    </span>
-                                    <span class="text-[11px] text-muted-foreground-1">
-                                        {{ $aspi->created_at ? $aspi->created_at->format('d M, H:i') : '-' }}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        {{-- Right: action --}}
-                        <button onclick="setResponse('{{ $aspi->id_pelaporan }}','{{ addslashes($aspi->siswa->nama ?? 'Anonim') }}','{{ addslashes($aspi->ket) }}','{{ strtolower($aspi->status) }}')"
-                            class="shrink-0 size-8 inline-flex items-center justify-center rounded-lg text-muted-foreground-1 hover:text-primary hover:bg-primary/10 transition-colors">
-                            <svg class="size-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                        </button>
-                    </div>
-                </div>
-                @empty
-                <div class="px-6 py-14 text-center">
-                    <div class="flex flex-col items-center gap-y-2">
-                        <svg class="size-8 text-muted-foreground-1" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                        <p class="text-sm text-muted-foreground-1">Belum ada laporan masuk.</p>
-                    </div>
-                </div>
-                @endforelse
-            </div>
-
-            {{-- Footer --}}
-            <div class="px-4 py-3 flex items-center justify-between border-t border-table-line">
-                <div class="flex items-center gap-x-3">
-                    <div class="flex items-center gap-x-1.5">
-                        <select id="per-page" onchange="changePerPage(this.value)"
-                            class="py-1 px-2 text-xs font-medium rounded-lg bg-layer border border-layer-line text-layer-foreground focus:outline-none">
-                            <option value="5">5</option>
-                            <option value="10" selected>10</option>
-                            <option value="25">25</option>
-                        </select>
-                        <span class="text-xs text-muted-foreground-1">per page</span>
-                    </div>
-                    <span class="text-xs text-muted-foreground-1">
-                        <span id="row-count" class="font-semibold text-foreground">{{ count($aspirasi_terbaru ?? []) }}</span> results
-                    </span>
-                </div>
-
+            <div class="px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 border-t border-table-line bg-muted/10">
+                <span data-hs-datatable-info class="text-xs text-muted-foreground-1"></span>
                 <div class="inline-flex items-center gap-x-1">
-                    <button id="btn-prev" onclick="changePage(-1)" disabled
+                    <button type="button" data-hs-datatable-paging-prev
                         class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg bg-layer border border-layer-line text-layer-foreground hover:bg-layer-hover disabled:opacity-40 disabled:pointer-events-none focus:outline-none transition-colors">
                         <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
                         Prev
                     </button>
-                    <button id="btn-next" onclick="changePage(1)"
+                    <div data-hs-datatable-paging-pages class="px-1 text-xs text-muted-foreground-1"></div>
+                    <button type="button" data-hs-datatable-paging-next
                         class="py-1.5 px-2.5 inline-flex items-center gap-x-1 text-xs font-medium rounded-lg bg-layer border border-layer-line text-layer-foreground hover:bg-layer-hover disabled:opacity-40 disabled:pointer-events-none focus:outline-none transition-colors">
                         Next
                         <svg class="size-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
                     </button>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -421,110 +363,6 @@
 
 @push('scripts')
 <script>
-    let currentFilter = 'all';
-    let currentSearch = '';
-    let currentPage   = 1;
-    let perPage       = 10;
-
-    // Select ALL .aspirasi-row — works for both <tr> and <div>
-    const allRows = () => Array.from(document.querySelectorAll('.aspirasi-row'));
-
-    // Deduplicate by data-search (desktop+mobile both exist in DOM, same data)
-    // We pair them: desktop rows live in table-body-desktop, mobile in table-body-mobile
-    const desktopRows = () => Array.from(document.querySelectorAll('#table-body-desktop .aspirasi-row'));
-    const mobileRows  = () => Array.from(document.querySelectorAll('#table-body-mobile .aspirasi-row'));
-
-    function getFilteredIndices() {
-        // Use desktop rows as source of truth for indices
-        const rows = desktopRows();
-        const indices = [];
-        rows.forEach((row, i) => {
-            const matchFilter = currentFilter === 'all' || row.dataset.status === currentFilter;
-            const matchSearch = !currentSearch || (row.dataset.search || '').includes(currentSearch.toLowerCase());
-            if (matchFilter && matchSearch) indices.push(i);
-        });
-        return indices;
-    }
-
-    function renderTable() {
-        const dRows  = desktopRows();
-        const mRows  = mobileRows();
-        const indices = getFilteredIndices();
-        const start   = (currentPage - 1) * perPage;
-        const end     = start + perPage;
-        const pageIdx = indices.slice(start, end);
-
-        // Hide all
-        dRows.forEach(r => r.style.display = 'none');
-        mRows.forEach(r => r.style.display = 'none');
-
-        // Show page slice
-        pageIdx.forEach(i => {
-            if (dRows[i]) dRows[i].style.display = '';
-            if (mRows[i]) mRows[i].style.display = '';
-        });
-
-        // Update count & pagination
-        const rc = document.getElementById('row-count');
-        if (rc) rc.innerText = indices.length;
-
-        const prev = document.getElementById('btn-prev');
-        const next = document.getElementById('btn-next');
-        if (prev) prev.disabled = currentPage <= 1;
-        if (next) next.disabled = end >= indices.length;
-
-        const ca = document.getElementById('check-all');
-        if (ca) ca.checked = false;
-    }
-
-    function searchTable(val) { currentSearch = val; currentPage = 1; renderTable(); }
-
-    function toggleFilter() { document.getElementById('filter-dropdown').classList.toggle('hidden'); }
-
-    function setFilter(status) {
-        currentFilter = status; currentPage = 1;
-        document.getElementById('filter-dropdown').classList.add('hidden');
-        document.getElementById('filter-badge').classList.toggle('hidden', status === 'all');
-        renderTable();
-    }
-
-    document.addEventListener('click', e => {
-        const w = document.getElementById('filter-dropdown-wrapper');
-        if (w && !w.contains(e.target)) document.getElementById('filter-dropdown').classList.add('hidden');
-    });
-
-    function changePage(dir) { currentPage += dir; renderTable(); }
-    function changePerPage(val) { perPage = parseInt(val); currentPage = 1; renderTable(); }
-
-    function toggleAll(el) {
-        const dRows   = desktopRows();
-        const indices = getFilteredIndices().slice((currentPage-1)*perPage, currentPage*perPage);
-        indices.forEach(i => {
-            const cb = dRows[i]?.querySelector('.row-check');
-            if (cb) cb.checked = el.checked;
-        });
-    }
-
-    function exportCSV() {
-        const dRows   = desktopRows();
-        const indices = getFilteredIndices();
-        const lines   = [['Nama','NIS','Status','Tanggal']];
-        indices.forEach(i => {
-            const row  = dRows[i];
-            const nama = row?.querySelector('.text-sm.font-medium')?.innerText ?? '';
-            const nis  = row?.querySelectorAll('td')[1]?.querySelector('.text-\\[11px\\]')?.innerText ?? '';
-            const stat = row?.dataset.status ?? '';
-            const tgl  = row?.querySelectorAll('td')[4]?.innerText?.trim() ?? '';
-            lines.push([nama, nis, stat, tgl]);
-        });
-        const csv  = lines.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
-        const blob = new Blob([csv], {type:'text/csv'});
-        const url  = URL.createObjectURL(blob);
-        const a    = document.createElement('a');
-        a.href = url; a.download = 'aspirasi.csv'; a.click();
-        URL.revokeObjectURL(url);
-    }
-
     function setResponse(id, nama, ket, status) {
         document.getElementById('response_form_fields').classList.remove('hidden');
         document.getElementById('selection_placeholder').classList.add('hidden');
@@ -543,7 +381,83 @@
         document.getElementById('selection_placeholder').classList.remove('hidden');
     }
 
-    renderTable();
+    function initializeDashboardDataTable() {
+        const pelaporFilterEl = document.getElementById('filter-pelapor');
+        const keteranganFilterEl = document.getElementById('filter-keterangan');
+        const statusFilterEl = document.getElementById('filter-status');
+        const tanggalFilterEl = document.getElementById('filter-tanggal');
+        const datatableRoot = document.getElementById('aspirasi-datatable');
+
+        if (!window.HSDataTable || !datatableRoot) {
+            return;
+        }
+
+        const existingInstance = window.HSDataTable.getInstance('#aspirasi-datatable', true);
+        const hsDataTable = existingInstance?.element ?? new window.HSDataTable(datatableRoot);
+        const dataTable = hsDataTable.dataTable;
+        if (!dataTable) {
+            return;
+        }
+
+        dataTable.search.fixed('columnFilters', function (_searchStr, data) {
+            const normalizeCellText = (value) => {
+                return String(value ?? '')
+                    .replace(/<[^>]*>/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .toLowerCase();
+            };
+
+            const pelaporKeyword = (pelaporFilterEl?.value ?? '').toLowerCase().trim();
+            const keteranganKeyword = (keteranganFilterEl?.value ?? '').toLowerCase().trim();
+            const selectedStatus = (statusFilterEl?.value ?? 'all').trim();
+            const tanggalKeyword = (tanggalFilterEl?.value ?? '').toLowerCase().trim();
+
+            const pelapor = normalizeCellText(data[1]);
+            const keterangan = normalizeCellText(data[2]);
+            const status = normalizeCellText(data[3]);
+            const tanggal = normalizeCellText(data[4]);
+
+            const matchPelapor = pelaporKeyword === '' || pelapor.includes(pelaporKeyword);
+            const matchKeterangan = keteranganKeyword === '' || keterangan.includes(keteranganKeyword);
+            const matchStatus = selectedStatus === 'all' || status === selectedStatus.toLowerCase();
+            const matchTanggal = tanggalKeyword === '' || tanggal.includes(tanggalKeyword);
+
+            return matchPelapor && matchKeterangan && matchStatus && matchTanggal;
+        });
+
+        if (pelaporFilterEl) {
+            pelaporFilterEl.oninput = () => dataTable.draw();
+        }
+        if (keteranganFilterEl) {
+            keteranganFilterEl.oninput = () => dataTable.draw();
+        }
+        if (statusFilterEl) {
+            statusFilterEl.onchange = () => dataTable.draw();
+        }
+        if (tanggalFilterEl) {
+            tanggalFilterEl.oninput = () => dataTable.draw();
+        }
+
+        const adjustColumns = () => {
+            dataTable.columns.adjust().draw(false);
+        };
+
+        requestAnimationFrame(adjustColumns);
+        if (window.__aspirasiTableResizeHandler) {
+            window.removeEventListener('resize', window.__aspirasiTableResizeHandler);
+        }
+        window.__aspirasiTableResizeHandler = adjustColumns;
+        window.addEventListener('resize', window.__aspirasiTableResizeHandler);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initializeDashboardDataTable);
+    } else {
+        initializeDashboardDataTable();
+    }
+
+    window.addEventListener('pageshow', initializeDashboardDataTable);
 </script>
 @endpush
 

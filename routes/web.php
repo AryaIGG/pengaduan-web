@@ -1,9 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\AspirasiController;
+use App\Http\Controllers\Auth\AdminForgotPasswordController;
+use App\Http\Controllers\Auth\AdminGoogleAuthController;
+use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\AdminResetPasswordController;
+use App\Http\Controllers\DashboardController;
+use Illuminate\Support\Facades\Route;
 
 // ============================================================
 // PUBLIC ROUTES
@@ -16,13 +19,24 @@ Route::get('/', function () {
 Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
 Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+Route::get('/admin/auth/google', [AdminGoogleAuthController::class, 'redirect'])->name('admin.auth.google');
+Route::get('/admin/auth/google/callback', [AdminGoogleAuthController::class, 'callback'])
+    ->name('admin.auth.google.callback');
+Route::get('/admin/forgot-password', [AdminForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('admin.password.request');
+Route::post('/admin/forgot-password', [AdminForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('admin.password.email');
+Route::get('/admin/reset-password/{token}', [AdminResetPasswordController::class, 'showResetForm'])
+    ->name('admin.password.reset');
+Route::post('/admin/reset-password', [AdminResetPasswordController::class, 'reset'])
+    ->name('admin.password.update');
 
 // ============================================================
 // PROTECTED ROUTES (Admin Only)
 // ============================================================
 
 Route::middleware(['auth:admin'])->group(function () {
-    
+
     // Dashboard Utama
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "datatables.net-dt/css/dataTables.dataTables.css";
 @import "../../node_modules/preline/css/themes/theme.css";
 @import "../../node_modules/preline/variants.css";
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -9,4 +10,33 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
     --color-brand: #3b82f6;
+}
+
+@layer components {
+    #aspirasi-datatable table.dataTable {
+        width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    #aspirasi-datatable table.dataTable thead th {
+        padding: 0.75rem 1rem !important;
+        vertical-align: middle;
+    }
+
+    #aspirasi-datatable table.dataTable tbody td {
+        padding: 1rem !important;
+        vertical-align: top;
+    }
+
+    #aspirasi-datatable table.dataTable th:first-child,
+    #aspirasi-datatable table.dataTable td:first-child {
+        width: 2.5rem !important;
+    }
+
+    #aspirasi-datatable table.dataTable th:last-child,
+    #aspirasi-datatable table.dataTable td:last-child {
+        width: 4rem !important;
+    }
 }
